@@ -4,13 +4,25 @@
  * @author Mendix Widgets Framework Team
  */
 import { CSSProperties } from "react";
+import { ListValue, ListAttributeValue, ListReferenceValue } from "mendix";
+import { Big } from "big.js";
 
 export interface KendoGanttContainerProps {
     name: string;
     class: string;
     style?: CSSProperties;
     tabIndex?: number;
-    sampleText: string;
+    data: ListValue;
+    titleAttribute: ListAttributeValue<string>;
+    startDateAttribute: ListAttributeValue<Date>;
+    endDateAttribute: ListAttributeValue<Date>;
+    progressAttribute?: ListAttributeValue<Big>;
+    dependencies?: ListValue;
+    dependenciesType?: ListAttributeValue<Big>;
+    fromAssociation?: ListReferenceValue;
+    fromObjectsDatasource: ListValue;
+    toAssociation?: ListReferenceValue;
+    toObjectsDatasource: ListValue;
 }
 
 export interface KendoGanttPreviewProps {
@@ -22,5 +34,15 @@ export interface KendoGanttPreviewProps {
     style: string;
     styleObject?: CSSProperties;
     readOnly: boolean;
-    sampleText: string;
+    data: {} | { caption: string } | { type: string } | null;
+    titleAttribute: string;
+    startDateAttribute: string;
+    endDateAttribute: string;
+    progressAttribute: string;
+    dependencies: {} | { caption: string } | { type: string } | null;
+    dependenciesType: string;
+    fromAssociation: string;
+    fromObjectsDatasource: {} | { caption: string } | { type: string } | null;
+    toAssociation: string;
+    toObjectsDatasource: {} | { caption: string } | { type: string } | null;
 }

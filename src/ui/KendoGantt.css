@@ -3,5 +3,9 @@
 Place your custom CSS here
 */
 .widget-hello-world {
+}
 
+/* for development only, please buy a license */
+.k-gantt div:nth-child(3) {
+    display: none;
 }

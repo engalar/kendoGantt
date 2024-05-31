@@ -1,4 +1,4 @@
-import React, { ReactElement, createElement } from "react";
+import { ReactElement, createElement, useCallback, useMemo, useState } from "react";
 import {
     Gantt,
     GanttWeekView,
@@ -56,35 +56,35 @@ const columns = [
     { field: taskModelFields.end, title: "End", width: 120, format: "{0:MM/dd/yyyy}", filter: GanttDateFilter }
 ];
 
-const App = () => {
-    const [taskData] = React.useState(exampleTaskData);
-    const [dependencyData] = React.useState(exampleDependencyData);
+const App = (): ReactElement => {
+    const [taskData] = useState(exampleTaskData);
+    const [dependencyData] = useState(exampleDependencyData);
 
-    const [expandedState, setExpandedState] = React.useState([7, 11, 12, 13]);
-    const [columnsState, setColumnsState] = React.useState<any[]>(columns);
+    const [expandedState, setExpandedState] = useState([7, 11, 12, 13]);
+    const [columnsState, setColumnsState] = useState<any[]>(columns);
 
-    const onColumnResize = React.useCallback(
+    const onColumnResize = useCallback(
         (event: GanttColumnResizeEvent) => event.end && setColumnsState(event.columns),
         [setColumnsState]
     );
 
-    const onColumnReorder = React.useCallback(
+    const onColumnReorder = useCallback(
         (event: GanttColumnReorderEvent) => setColumnsState(event.columns),
         [setColumnsState]
     );
 
-    const [dataState, setDataState] = React.useState<any>({
+    const [dataState, setDataState] = useState<any>({
         sort: [{ field: "orderId", dir: "asc" }],
         filter: []
     });
 
-    const onDataStateChange = React.useCallback(
+    const onDataStateChange = useCallback(
         (event: GanttDataStateChangeEvent) =>
             setDataState({ sort: event.dataState.sort, filter: event.dataState.filter }),
         [setDataState]
     );
 
-    const onExpandChange = React.useCallback(
+    const onExpandChange = useCallback(
         (event: GanttExpandChangeEvent) => {
             const id = getTaskId(event.dataItem);
             const newExpandedState = event.value
@@ -96,7 +96,7 @@ const App = () => {
         [expandedState, setExpandedState]
     );
 
-    const processedData = React.useMemo(() => {
+    const processedData = useMemo(() => {
         const filteredData = filterBy(taskData, dataState.filter, taskModelFields.children);
         const sortedData = orderBy(filteredData, dataState.sort, taskModelFields.children);
 
@@ -108,33 +108,31 @@ const App = () => {
     }, [taskData, dataState, expandedState]);
 
     return (
-        <div>
-            <Gantt
-                style={ganttStyle}
-                taskData={processedData}
-                taskModelFields={taskModelFields}
-                dependencyData={dependencyData}
-                dependencyModelFields={dependencyModelFields}
-                columns={columnsState}
-                resizable
-                reorderable
-                sortable
-                sort={dataState.sort}
-                filter={dataState.filter}
-                onColumnResize={onColumnResize}
-                onColumnReorder={onColumnReorder}
-                onExpandChange={onExpandChange}
-                onDataStateChange={onDataStateChange}
-            >
-                <GanttWeekView />
-                <GanttDayView />
-                <GanttMonthView />
-                <GanttYearView />
-            </Gantt>
-        </div>
+        <Gantt
+            style={ganttStyle}
+            taskData={processedData}
+            taskModelFields={taskModelFields}
+            dependencyData={dependencyData}
+            dependencyModelFields={dependencyModelFields}
+            columns={columnsState}
+            resizable
+            reorderable
+            sortable
+            sort={dataState.sort}
+            filter={dataState.filter}
+            onColumnResize={onColumnResize}
+            onColumnReorder={onColumnReorder}
+            onExpandChange={onExpandChange}
+            onDataStateChange={onDataStateChange}
+        >
+            <GanttWeekView />
+            <GanttDayView />
+            <GanttMonthView />
+            <GanttYearView />
+        </Gantt>
     );
 };
 
-export function HelloWorldSample({ sampleText }: HelloWorldSampleProps): ReactElement {
+export function HelloWorldSample(_props: HelloWorldSampleProps): ReactElement {
     return <App></App>;
 }

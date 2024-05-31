@@ -1,16 +1,111 @@
-<?xml version="1.0" encoding="utf-8"?>
-<widget id="wengao.kendogantt.KendoGantt" pluginWidget="true" needsEntityContext="true" offlineCapable="true"
-        supportedPlatform="Web"
-        xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<widget
+    id="wengao.kendogantt.KendoGantt"
+    pluginWidget="true"
+    needsEntityContext="true"
+    offlineCapable="true"
+    supportedPlatform="Web"
+    xmlns="http://www.mendix.com/widget/1.0/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="./node_modules/mendix/custom_widget.xsd"
+>
     <name>Kendo Gantt</name>
     <description>My widget description</description>
-    <icon/>
+    <icon />
     <properties>
-        <propertyGroup caption="General">
-            <property key="sampleText" type="string" required="false">
-                <caption>Default value</caption>
-                <description>Sample text input</description>
+        <propertyGroup caption="Task">
+            <!-- gantt tasks datasource -->
+            <property key="data" type="datasource" isList="true" required="true">
+                <caption>Data source</caption>
+                <description />
+            </property>
+            <!-- gantt title attribute -->
+            <property key="titleAttribute" type="attribute" required="true" dataSource="data">
+                <caption>Title attribute</caption>
+                <description>The attribute that will be used as the title of the task.</description>
+                <attributeTypes>
+                    <attributeType name="String" />
+                </attributeTypes>
+            </property>
+            <!-- gantt start date attribute -->
+            <property key="startDateAttribute" type="attribute" required="true" dataSource="data">
+                <caption>Start date attribute</caption>
+
+                <description>The attribute that will be used as the start date of the task.</description>
+                <attributeTypes>
+                    <attributeType name="DateTime" />
+                </attributeTypes>
+            </property>
+            <!-- gantt end date attribute -->
+            <property key="endDateAttribute" type="attribute" required="true" dataSource="data">
+                <caption>End date attribute</caption>
+                <description>The attribute that will be used as the end date of the task.</description>
+                <attributeTypes>
+                    <attributeType name="DateTime" />
+                </attributeTypes>
+            </property>
+            <!-- gantt progress attribute -->
+            <property key="progressAttribute" type="attribute" required="false" dataSource="data">
+                <caption>Progress attribute</caption>
+                <description>The attribute that will be used as the progress of the task.</description>
+                <attributeTypes>
+                    <attributeType name="Decimal" />
+                </attributeTypes>
+            </property>
+        </propertyGroup>
+        <propertyGroup caption="Dependency">
+            <!-- gantt dependency datasource -->
+            <property key="dependencies" type="datasource" isList="true" required="false">
+                <caption>Dependencies data source</caption>
+                <description />
+            </property>
+            <!-- gantt dependencies type -->
+            <property key="dependenciesType" type="attribute" required="false" dataSource="dependencies">
+                <caption>Dependencies type</caption>
+                <description>
+                    The type of dependencies to be displayed in the gantt chart.
+                    FF = 0, FS = 1, SF = 2, SS = 3
+                </description>
+                <attributeTypes>
+                    <attributeType name="Integer" />
+                </attributeTypes>
+            </property>
+            <!-- https://docs.mendix.com/apidocs-mxsdk/apidocs/pluggable-widgets-property-types-9/#453-studio-pro-ui -->
+            <!-- dependencies from association -->
+            <property
+                key="fromAssociation"
+                type="association"
+                selectableObjects="fromObjectsDatasource"
+                dataSource="dependencies"
+            >
+                <caption>Dependencies from association</caption>
+                <description>The association from which the dependencies will be taken.</description>
+                <associationTypes>
+                    <associationType name="Reference" />
+                </associationTypes>
+            </property>
+
+            <property key="fromObjectsDatasource" type="datasource" isList="true">
+                <caption>From objects data source</caption>
+                <description />
+            </property>
+            <!-- dependencies to association -->
+            <property
+                key="toAssociation"
+                type="association"
+                selectableObjects="toObjectsDatasource"
+                dataSource="dependencies"
+            >
+                <caption>Dependencies to association</caption>
+                <description>The association to which the dependencies will be taken.</description>
+                <associationTypes>
+                    <associationType name="Reference" />
+                </associationTypes>
+            </property>
+
+            <property key="toObjectsDatasource" type="datasource" isList="true">
+                <caption>To objects data source</caption>
+                <description />
             </property>
         </propertyGroup>
     </properties>
