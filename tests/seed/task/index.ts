@@ -2,6 +2,7 @@ import { exampleTaskData, exampleDependencyData } from "../../../src/components/
 import Big from "big.js";
 
 interface Task {
+    id: number;
     title: string;
     orderId: number;
     start: Date;
@@ -16,16 +17,12 @@ function flatten(rootTask: Task): Task[] {
     return result;
 }
 
-async function seedTask(task: Task): Promise<any> {
+async function seedTask(entity: string, cb: (e: any) => void): Promise<any> {
     return new Promise((resolve, reject) => {
         window.mx.data.create({
-            entity: "MyFirstModule.TaskData",
+            entity,
             callback(obj) {
-                obj.set("Title", task.title);
-                obj.set("OrderID", task.orderId);
-                obj.set("Start", task.start);
-                obj.set("End", task.end);
-                obj.set("PercentComplete", Big(task.percentComplete).toFixed(8)); // 限制小数点后 8 位)
+                cb(obj);
                 resolve(obj);
             },
             error(e) {
@@ -52,8 +49,8 @@ async function commit(objs: any[]): Promise<void> {
     });
 }
 
-async function removeAll(): Promise<void> {
-    const tasks = await retrieveAll("MyFirstModule.TaskData");
+async function removeAll(entity: string): Promise<void> {
+    const tasks = await retrieveAll(entity);
     return new Promise((resolve, reject) => {
         window.mx.data.remove({
             guids: tasks.map(task => task.getGuid()),
@@ -85,12 +82,24 @@ async function retrieveAll(entity: string): Promise<any[]> {
 }
 
 async function main(rootTask: Task): Promise<void> {
-    await removeAll();
+    await removeAll("MyFirstModule.TaskData");
     const taskObjs = [];
     const tasks = flatten(rootTask);
-    for (const task of tasks) {
-        const obj = await seedTask(task);
+    const idCache: { [id: number]: number } = {};
+    const guidCache: string[] = [];
+
+    for (const [index, task] of tasks.entries()) {
+        const obj = await seedTask("MyFirstModule.TaskData", e => {
+            e.set("Title", task.title);
+            e.set("OrderID", task.orderId);
+            e.set("Start", task.start);
+            e.set("End", task.end);
+            e.set("PercentComplete", Big(task.percentComplete).toFixed(8)); // 限制小数点后 8 位)
+        });
         taskObjs.push(obj);
+        // cache task object with obj.getGuid() and index for later use
+        idCache[task.id] = index;
+        guidCache.push(obj.getGuid());
     }
     // update parent-child relationships
     for (const task of tasks) {
@@ -104,7 +113,18 @@ async function main(rootTask: Task): Promise<void> {
             }
         }
     }
-
     await commit(taskObjs);
+
+    await removeAll("MyFirstModule.DependencyData");
+    const dependencyObjs = [];
+    for (const [index, dep] of exampleDependencyData.entries()) {
+        const obj = await seedTask("MyFirstModule.DependencyData", e => {
+            e.set("MyFirstModule.DependencyData_TaskData_From", guidCache[idCache[dep.fromId]]);
+            e.set("MyFirstModule.DependencyData_TaskData_To", guidCache[idCache[dep.toId]]);
+            e.set("DependencyType", dep.type);
+        });
+        dependencyObjs.push(obj);
+    }
+    await commit(dependencyObjs);
 }
 main(exampleTaskData[0]);
