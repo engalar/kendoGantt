@@ -92,6 +92,19 @@ async function main(rootTask: Task): Promise<void> {
         const obj = await seedTask(task);
         taskObjs.push(obj);
     }
+    // update parent-child relationships
+    for (const task of tasks) {
+        if (task.children) {
+            const parentObj = taskObjs.find(obj => obj.get("Title") === task.title);
+            for (const child of task.children) {
+                const childObj = taskObjs.find(obj => obj.get("Title") === child.title);
+                if (childObj) {
+                    childObj.set("MyFirstModule.TaskData_TaskData_Parent", parentObj);
+                }
+            }
+        }
+    }
+
     await commit(taskObjs);
 }
 main(exampleTaskData[0]);

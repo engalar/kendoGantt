@@ -22,7 +22,8 @@
     "lint": "pluggable-widgets-tools lint",
     "lint:fix": "pluggable-widgets-tools lint:fix",
     "prerelease": "npm run lint",
-    "release": "pluggable-widgets-tools release:web"
+    "release": "pluggable-widgets-tools release:web",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@engalar/vite-plugin-mendix": "^1.2.3",
