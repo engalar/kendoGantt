@@ -1,15 +1,24 @@
 import { exampleTaskData, exampleDependencyData } from "../../../src/components/data";
 import Big from "big.js";
 
-function flatten(rootTask) {
+interface Task {
+    title: string;
+    orderId: number;
+    start: Date;
+    end: Date;
+    percentComplete: number;
+    children?: Task[];
+}
+
+function flatten(rootTask: Task): Task[] {
     const result = [rootTask];
-    rootTask.children?.forEach(child => result.push(...flatten(child)));
+    rootTask.children?.forEach((child: Task) => result.push(...flatten(child)));
     return result;
 }
 
-async function seedTask(task) {
+async function seedTask(task: Task): Promise<any> {
     return new Promise((resolve, reject) => {
-        mx.data.create({
+        window.mx.data.create({
             entity: "MyFirstModule.TaskData",
             callback(obj) {
                 obj.set("Title", task.title);
@@ -27,9 +36,9 @@ async function seedTask(task) {
     });
 }
 
-async function commit(objs) {
-    await new Promise((resolve, reject) => {
-        mx.data.commit({
+async function commit(objs: any[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+        window.mx.data.commit({
             mxobjs: objs,
             callback() {
                 console.log("Committed successfully");
@@ -43,10 +52,10 @@ async function commit(objs) {
     });
 }
 
-async function removeAll() {
+async function removeAll(): Promise<void> {
     const tasks = await retrieveAll("MyFirstModule.TaskData");
-    await new Promise((resolve, reject) => {
-        mx.data.remove({
+    return new Promise((resolve, reject) => {
+        window.mx.data.remove({
             guids: tasks.map(task => task.getGuid()),
             callback() {
                 console.log("Removed all tasks");
@@ -60,9 +69,9 @@ async function removeAll() {
     });
 }
 
-async function retrieveAll(entity) {
+async function retrieveAll(entity: string): Promise<any[]> {
     return new Promise((resolve, reject) => {
-        mx.data.get({
+        window.mx.data.get({
             xpath: `//${entity}`,
             callback(objs) {
                 resolve(objs);
@@ -75,7 +84,7 @@ async function retrieveAll(entity) {
     });
 }
 
-async function main(rootTask) {
+async function main(rootTask: Task): Promise<void> {
     await removeAll();
     const taskObjs = [];
     const tasks = flatten(rootTask);
