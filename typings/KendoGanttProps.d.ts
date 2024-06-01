@@ -4,7 +4,7 @@
  * @author Mendix Widgets Framework Team
  */
 import { CSSProperties } from "react";
-import { ListValue, ListAttributeValue, ListReferenceValue } from "mendix";
+import { ListValue, ListAttributeValue } from "mendix";
 import { Big } from "big.js";
 
 export interface KendoGanttContainerProps {
@@ -13,16 +13,16 @@ export interface KendoGanttContainerProps {
     style?: CSSProperties;
     tabIndex?: number;
     data: ListValue;
+    idAttribute: ListAttributeValue<Big>;
     titleAttribute: ListAttributeValue<string>;
     startDateAttribute: ListAttributeValue<Date>;
     endDateAttribute: ListAttributeValue<Date>;
-    progressAttribute?: ListAttributeValue<Big>;
-    dependencies?: ListValue;
-    dependenciesType?: ListAttributeValue<Big>;
-    fromAssociation?: ListReferenceValue;
-    fromObjectsDatasource: ListValue;
-    toAssociation?: ListReferenceValue;
-    toObjectsDatasource: ListValue;
+    progressAttribute: ListAttributeValue<Big>;
+    parentIdAttribute: ListAttributeValue<Big>;
+    dependencies: ListValue;
+    dependenciesType: ListAttributeValue<Big>;
+    fromIdAttribute: ListAttributeValue<Big>;
+    toIdAttribute: ListAttributeValue<Big>;
 }
 
 export interface KendoGanttPreviewProps {
@@ -35,14 +35,14 @@ export interface KendoGanttPreviewProps {
     styleObject?: CSSProperties;
     readOnly: boolean;
     data: {} | { caption: string } | { type: string } | null;
+    idAttribute: string;
     titleAttribute: string;
     startDateAttribute: string;
     endDateAttribute: string;
     progressAttribute: string;
+    parentIdAttribute: string;
     dependencies: {} | { caption: string } | { type: string } | null;
     dependenciesType: string;
-    fromAssociation: string;
-    fromObjectsDatasource: {} | { caption: string } | { type: string } | null;
-    toAssociation: string;
-    toObjectsDatasource: {} | { caption: string } | { type: string } | null;
+    fromIdAttribute: string;
+    toIdAttribute: string;
 }

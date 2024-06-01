@@ -19,6 +19,14 @@
                 <caption>Data source</caption>
                 <description />
             </property>
+            <!-- gantt tasks id attribute -->
+            <property key="idAttribute" type="attribute" required="true" dataSource="data">
+                <caption>Id attribute</caption>
+                <description>The attribute that will be used as the id of the task.</description>
+                <attributeTypes>
+                    <attributeType name="Integer" />
+                </attributeTypes>
+            </property>
             <!-- gantt title attribute -->
             <property key="titleAttribute" type="attribute" required="true" dataSource="data">
                 <caption>Title attribute</caption>
@@ -45,22 +53,49 @@
                 </attributeTypes>
             </property>
             <!-- gantt progress attribute -->
-            <property key="progressAttribute" type="attribute" required="false" dataSource="data">
+            <property key="progressAttribute" type="attribute" required="true" dataSource="data">
                 <caption>Progress attribute</caption>
                 <description>The attribute that will be used as the progress of the task.</description>
                 <attributeTypes>
                     <attributeType name="Decimal" />
                 </attributeTypes>
             </property>
+            <!-- attribute parent id -->
+            <property key="parentIdAttribute" type="attribute" required="true" dataSource="data">
+                <caption>Parent id attribute</caption>
+                <description>The attribute that will be used as the parent id of the task.</description>
+                <attributeTypes>
+                    <attributeType name="Integer" />
+                </attributeTypes>
+            </property>
+
+            <!-- parent association -->
+            <!-- <property
+                key="parentAssociation"
+                type="association"
+                required="true"
+                selectableObjects="parentObjectsDatasource"
+                dataSource="data"
+            >
+                <caption>Parent association</caption>
+                <description>The association that will be used to determine the parent of the task.</description>
+                <associationTypes>
+                    <associationType name="Reference" />
+                </associationTypes>
+            </property>
+            <property key="parentObjectsDatasource" type="datasource" isList="true">
+                <caption>Parent objects data source</caption>
+                <description />
+            </property> -->
         </propertyGroup>
         <propertyGroup caption="Dependency">
             <!-- gantt dependency datasource -->
-            <property key="dependencies" type="datasource" isList="true" required="false">
+            <property key="dependencies" type="datasource" isList="true" required="true">
                 <caption>Dependencies data source</caption>
                 <description />
             </property>
             <!-- gantt dependencies type -->
-            <property key="dependenciesType" type="attribute" required="false" dataSource="dependencies">
+            <property key="dependenciesType" type="attribute" required="true" dataSource="dependencies">
                 <caption>Dependencies type</caption>
                 <description>
                     The type of dependencies to be displayed in the gantt chart.
@@ -70,42 +105,19 @@
                     <attributeType name="Integer" />
                 </attributeTypes>
             </property>
-            <!-- https://docs.mendix.com/apidocs-mxsdk/apidocs/pluggable-widgets-property-types-9/#453-studio-pro-ui -->
-            <!-- dependencies from association -->
-            <property
-                key="fromAssociation"
-                type="association"
-                selectableObjects="fromObjectsDatasource"
-                dataSource="dependencies"
-            >
-                <caption>Dependencies from association</caption>
-                <description>The association from which the dependencies will be taken.</description>
-                <associationTypes>
-                    <associationType name="Reference" />
-                </associationTypes>
+            <property key="fromIdAttribute" type="attribute" required="true" dataSource="dependencies">
+                <caption>From Id attribute</caption>
+                <description>The attribute that will be used as the id of the task.</description>
+                <attributeTypes>
+                    <attributeType name="Integer" />
+                </attributeTypes>
             </property>
-
-            <property key="fromObjectsDatasource" type="datasource" isList="true">
-                <caption>From objects data source</caption>
-                <description />
-            </property>
-            <!-- dependencies to association -->
-            <property
-                key="toAssociation"
-                type="association"
-                selectableObjects="toObjectsDatasource"
-                dataSource="dependencies"
-            >
-                <caption>Dependencies to association</caption>
-                <description>The association to which the dependencies will be taken.</description>
-                <associationTypes>
-                    <associationType name="Reference" />
-                </associationTypes>
-            </property>
-
-            <property key="toObjectsDatasource" type="datasource" isList="true">
-                <caption>To objects data source</caption>
-                <description />
+            <property key="toIdAttribute" type="attribute" required="true" dataSource="dependencies">
+                <caption>To Id attribute</caption>
+                <description>The attribute that will be used as the id of the task.</description>
+                <attributeTypes>
+                    <attributeType name="Integer" />
+                </attributeTypes>
             </property>
         </propertyGroup>
     </properties>

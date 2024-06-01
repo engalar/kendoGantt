@@ -21,7 +21,8 @@ import { getter } from "@progress/kendo-react-common";
 import { exampleTaskData, exampleDependencyData } from "./data";
 
 export interface HelloWorldSampleProps {
-    sampleText?: string;
+    tasks: any[];
+    dependencies: any[];
 }
 const ganttStyle = {
     height: 500,
@@ -33,7 +34,7 @@ const taskModelFields = {
     start: "start",
     end: "end",
     title: "title",
-    percentComplete: "percentComplete",
+    percentComplete: "progress",
     isRollup: "isRollup",
     isExpanded: "isExpanded",
     isInEdit: "isInEdit",
@@ -56,10 +57,7 @@ const columns = [
     { field: taskModelFields.end, title: "End", width: 120, format: "{0:MM/dd/yyyy}", filter: GanttDateFilter }
 ];
 
-const App = (): ReactElement => {
-    const [taskData] = useState(exampleTaskData);
-    const [dependencyData] = useState(exampleDependencyData);
-
+export function HelloWorldSample({ tasks, dependencies }: HelloWorldSampleProps): ReactElement {
     const [expandedState, setExpandedState] = useState([7, 11, 12, 13]);
     const [columnsState, setColumnsState] = useState<any[]>(columns);
 
@@ -97,7 +95,7 @@ const App = (): ReactElement => {
     );
 
     const processedData = useMemo(() => {
-        const filteredData = filterBy(taskData, dataState.filter, taskModelFields.children);
+        const filteredData = filterBy(tasks, dataState.filter, taskModelFields.children);
         const sortedData = orderBy(filteredData, dataState.sort, taskModelFields.children);
 
         return mapTree(sortedData, taskModelFields.children, task =>
@@ -105,14 +103,14 @@ const App = (): ReactElement => {
                 [taskModelFields.isExpanded]: expandedState.includes(getTaskId(task))
             })
         );
-    }, [taskData, dataState, expandedState]);
+    }, [tasks, dataState, expandedState]);
 
     return (
         <Gantt
             style={ganttStyle}
             taskData={processedData}
             taskModelFields={taskModelFields}
-            dependencyData={dependencyData}
+            dependencyData={dependencies}
             dependencyModelFields={dependencyModelFields}
             columns={columnsState}
             resizable
@@ -131,8 +129,4 @@ const App = (): ReactElement => {
             <GanttYearView />
         </Gantt>
     );
-};
-
-export function HelloWorldSample(_props: HelloWorldSampleProps): ReactElement {
-    return <App></App>;
 }

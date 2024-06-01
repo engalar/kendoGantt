@@ -7,6 +7,7 @@ interface Task {
     orderId: number;
     start: Date;
     end: Date;
+    parentId: number | null;
     percentComplete: number;
     children?: Task[];
 }
@@ -85,12 +86,13 @@ async function main(rootTask: Task): Promise<void> {
     await removeAll("MyFirstModule.TaskData");
     const taskObjs = [];
     const tasks = flatten(rootTask);
-    const idCache: { [id: number]: number } = {};
+    const id2IndexCache: { [id: number]: number } = {};
     const guidCache: string[] = [];
 
     for (const [index, task] of tasks.entries()) {
         const obj = await seedTask("MyFirstModule.TaskData", e => {
             e.set("Title", task.title);
+            e.set("_Id", task.id);
             e.set("OrderID", task.orderId);
             e.set("Start", task.start);
             e.set("End", task.end);
@@ -98,29 +100,30 @@ async function main(rootTask: Task): Promise<void> {
         });
         taskObjs.push(obj);
         // cache task object with obj.getGuid() and index for later use
-        idCache[task.id] = index;
+        id2IndexCache[task.id] = index;
         guidCache.push(obj.getGuid());
     }
     // update parent-child relationships
-    for (const task of tasks) {
-        if (task.children) {
-            const parentObj = taskObjs.find(obj => obj.get("Title") === task.title);
-            for (const child of task.children) {
-                const childObj = taskObjs.find(obj => obj.get("Title") === child.title);
-                if (childObj) {
-                    childObj.set("MyFirstModule.TaskData_TaskData_Parent", parentObj);
-                }
-            }
+    for (const obj of taskObjs) {
+        const _Id = obj.get("_Id").toNumber();
+        const index = id2IndexCache[_Id];
+        const parentId = tasks[index].parentId;
+        if (parentId == null) {
+            continue;
         }
+        const parentIndex = id2IndexCache[parentId];
+        const parentObj = taskObjs[parentIndex];
+        obj.set("MyFirstModule.TaskData_TaskData_Parent", parentObj);
     }
+
     await commit(taskObjs);
 
     await removeAll("MyFirstModule.DependencyData");
     const dependencyObjs = [];
     for (const [index, dep] of exampleDependencyData.entries()) {
         const obj = await seedTask("MyFirstModule.DependencyData", e => {
-            e.set("MyFirstModule.DependencyData_TaskData_From", guidCache[idCache[dep.fromId]]);
-            e.set("MyFirstModule.DependencyData_TaskData_To", guidCache[idCache[dep.toId]]);
+            e.set("MyFirstModule.DependencyData_TaskData_From", guidCache[id2IndexCache[dep.fromId]]);
+            e.set("MyFirstModule.DependencyData_TaskData_To", guidCache[id2IndexCache[dep.toId]]);
             e.set("DependencyType", dep.type);
         });
         dependencyObjs.push(obj);
