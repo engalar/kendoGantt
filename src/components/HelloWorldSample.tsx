@@ -18,7 +18,6 @@ import {
 } from "@progress/kendo-react-gantt";
 
 import { getter } from "@progress/kendo-react-common";
-import { exampleTaskData, exampleDependencyData } from "./data";
 
 export interface HelloWorldSampleProps {
     tasks: any[];

@@ -1,9 +1,7 @@
 import { ReactElement, createElement } from "react";
-import { HelloWorldSample } from "./components/HelloWorldSample";
-import { KendoGanttPreviewProps } from "../typings/KendoGanttProps";
 
-export function preview({ sampleText }: KendoGanttPreviewProps): ReactElement {
-    return <HelloWorldSample sampleText={sampleText} />;
+export function preview(): ReactElement {
+    return <span>Gantt Chart Preview</span>;
 }
 
 export function getPreviewCss(): string {

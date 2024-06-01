@@ -120,7 +120,7 @@ async function main(rootTask: Task): Promise<void> {
 
     await removeAll("MyFirstModule.DependencyData");
     const dependencyObjs = [];
-    for (const [index, dep] of exampleDependencyData.entries()) {
+    for (const [, dep] of exampleDependencyData.entries()) {
         const obj = await seedTask("MyFirstModule.DependencyData", e => {
             e.set("MyFirstModule.DependencyData_TaskData_From", guidCache[id2IndexCache[dep.fromId]]);
             e.set("MyFirstModule.DependencyData_TaskData_To", guidCache[id2IndexCache[dep.toId]]);
