@@ -1,0 +1,26 @@
+
+/.classpath
+/.mendix-cache
+/.project
+/.vscode
+/*.mpr.bak
+/*.mpr.lock
+deployment/*
+!deployment/data/
+
+/theme-cache
+/*.launch
+/packages/
+/releases/
+/.mendix-cache/
+/*.mpr.bak
+/*.mpr.lock
+/modeler-merge-marker
+/project-settings.user.json
+/javasource/*/proxies/
+/javasource/system/
+/**/node_modules/
+# !/javascriptsource/**/node_modules/
+/nativemobile/builds/
+/vendorlib/temp/
+

@@ -26,6 +26,7 @@ export function KendoGantt({
             const flatData = data.items.map((task: ObjectItem) => {
                 const pa = parentIdAttribute.get(task).value;
                 return {
+                    // use task guid ?
                     id: idAttribute.get(task).value?.toNumber(),
                     title: titleAttribute.get(task).value,
                     orderId: 0,

@@ -1,4 +1,4 @@
-import { ReactElement, createElement, useCallback, useMemo, useState } from "react";
+import { ReactElement, createElement, useCallback, useLayoutEffect, useMemo, useState } from "react";
 import {
     Gantt,
     GanttWeekView,
@@ -14,10 +14,13 @@ import {
     GanttColumnResizeEvent,
     GanttColumnReorderEvent,
     GanttDataStateChangeEvent,
-    GanttExpandChangeEvent
+    GanttExpandChangeEvent,
+    GanttDependencyCreateEvent,
+    GanttDependency,
+    addDependency
 } from "@progress/kendo-react-gantt";
 
-import { getter } from "@progress/kendo-react-common";
+import { getter, guid } from "@progress/kendo-react-common";
 
 export interface HelloWorldSampleProps {
     tasks: any[];
@@ -57,6 +60,10 @@ const columns = [
 ];
 
 export function HelloWorldSample({ tasks, dependencies }: HelloWorldSampleProps): ReactElement {
+    const [dependencyData, setDependencyData] = useState<GanttDependency[]>(dependencies);
+    useLayoutEffect(() => {
+        setDependencyData(dependencies);
+    }, [dependencies]);
     const [expandedState, setExpandedState] = useState([7, 11, 12, 13]);
     const [columnsState, setColumnsState] = useState<any[]>(columns);
 
@@ -104,17 +111,33 @@ export function HelloWorldSample({ tasks, dependencies }: HelloWorldSampleProps)
         );
     }, [tasks, dataState, expandedState]);
 
+    const onDependencyCreate = useCallback(
+        (event: GanttDependencyCreateEvent) => {
+            const newData = addDependency({
+                dependencyData,
+                fromId: event.fromId,
+                toId: event.toId,
+                type: event.type,
+                dependencyModelFields,
+                defaultDataItem: { [dependencyModelFields.id]: guid() }
+            });
+            setDependencyData(newData);
+        },
+        [setDependencyData, dependencyData]
+    );
+
     return (
         <Gantt
             style={ganttStyle}
             taskData={processedData}
             taskModelFields={taskModelFields}
-            dependencyData={dependencies}
+            dependencyData={dependencyData}
             dependencyModelFields={dependencyModelFields}
             columns={columnsState}
             resizable
             reorderable
             sortable
+            onDependencyCreate={onDependencyCreate}
             sort={dataState.sort}
             filter={dataState.filter}
             onColumnResize={onColumnResize}

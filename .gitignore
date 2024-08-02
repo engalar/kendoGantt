@@ -1,4 +1,3 @@
-tests/testProject/
 .DS_Store
 .idea
 .vscode
@@ -12,9 +11,7 @@ mxproject
 coverage
 
 **/results
-mendixProject
 **/e2e/diffs
 **/screenshot
 **/screenshot-results
-**/tests/testProject
 **/artifacts
